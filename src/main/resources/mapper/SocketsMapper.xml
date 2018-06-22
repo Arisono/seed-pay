@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.project.dao.SocketsMapper">
+  <resultMap id="BaseResultMap" type="com.company.project.model.Sockets">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="socket_ip" jdbcType="VARCHAR" property="socketIp" />
+    <result column="socket_online_time" jdbcType="TIMESTAMP" property="socketOnlineTime" />
+    <result column="socket_offline_time" jdbcType="TIMESTAMP" property="socketOfflineTime" />
+    <result column="socket_state" jdbcType="INTEGER" property="socketState" />
+    <result column="userid" jdbcType="INTEGER" property="userid" />
+  </resultMap>
+</mapper>

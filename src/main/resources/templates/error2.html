@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+  <title>统一异常处理</title>
+   <style>
+	.text_type {
+		font-family: verdana, sans-serif;
+		color: #F71B1B;
+		font-size: 15px;
+		font-weight: bold;
+		text-decoration: underline;
+	}
+	.table-c table{
+	    border-right:1px solid #F00;
+	    border-bottom:1px solid #F00;
+	    text-align: center;
+	}
+	.table-c table td{
+		border-left:1px solid #F00;
+		border-top:1px solid #F00;
+		color: #6517E3;
+		line-height: 3;
+		font-size: 16px;
+	    text-align: center;}
+	/* css注释：只对table td标签设置红色边框样式 */
+	</style>
+</head>
+<body>
+<h2>服务异常，请稍后再试。</h2>
+<div  th:object="${errorInfo}">
+    <h3 th:text="*{'发生时间：'+time}"></h3>
+    <h3 th:text="*{'访问地址：'+url}"></h3>
+    <h3 th:text="*{'问题类型：'+error}"></h3>
+    <h3 th:text="*{'通信状态：'+statusCode+','+reasonPhrase}"></h3>
+    <h3 class="text_type" th:text="*{'堆栈信息：'+stackTrace}"></h3>
+</div>
+<!-- <div class="table-c">
+ <table style="with:100%;border:0;cellspacing:0;cellpadding:0">
+	<tr>
+       <td >类名</td>
+       <td >文件</td>
+       <td >行数</td>
+       <td >方法</td>
+       <td >是否是本地方法</td>
+    </tr>
+    <tr th:each="customer, iterStat : ${errorInfo.stackTraceElements}">
+      <td th:text="${customer.className}">Onions</td>
+      <td th:text="${customer.fileName}">2.41</td>
+      <td th:text="${customer.lineNumber}">yes</td>
+      <td th:text="${customer.methodName}">yes</td>
+      <td th:text="${customer.nativeMethod}">yes</td>
+    </tr>
+  </table> 
+
+  </div> -->
+</body>
+</html>

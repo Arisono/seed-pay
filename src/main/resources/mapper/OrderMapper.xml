@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.project.dao.OrderMapper">
+  <resultMap id="BaseResultMap" type="com.company.project.model.Order">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="orderId" jdbcType="VARCHAR" property="orderid" />
+    <result column="transactionId" jdbcType="VARCHAR" property="transactionid" />
+    <result column="userId" jdbcType="VARCHAR" property="userid" />
+    <result column="payType" jdbcType="VARCHAR" property="paytype" />
+    <result column="tradeState" jdbcType="INTEGER" property="tradestate" />
+    <result column="time_create" jdbcType="TIMESTAMP" property="timeCreate" />
+    <result column="fee" jdbcType="FLOAT" property="fee" />
+    <result column="refundFee" jdbcType="DOUBLE" property="refundfee" />
+    <result column="time_payment" jdbcType="TIMESTAMP" property="timePayment" />
+    <result column="orderRefundId" jdbcType="VARCHAR" property="orderrefundid" />
+    <result column="refundId" jdbcType="VARCHAR" property="refundid" />
+    <result column="time_refund" jdbcType="TIMESTAMP" property="timeRefund" />
+    <result column="body" jdbcType="VARCHAR" property="body" />
+    <result column="detail" jdbcType="VARCHAR" property="detail" />
+    <result column="attach" jdbcType="VARCHAR" property="attach" />
+  </resultMap>
+</mapper>
