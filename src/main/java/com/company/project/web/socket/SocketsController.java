@@ -46,7 +46,7 @@ public class SocketsController {
         return ResultGenerator.genSuccessResult();
     }
 
-    @PostMapping("/detail")
+    @GetMapping("/detail")
     public Result detail(@RequestParam Integer id) {
         Sockets sockets = socketsService.findById(id);
         return ResultGenerator.genSuccessResult(sockets);

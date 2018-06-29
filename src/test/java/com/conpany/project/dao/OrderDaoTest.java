@@ -91,7 +91,7 @@ public class OrderDaoTest extends Tester {
 	@Test
 	public void testMapper() { // 自己实现的sql语句查询
 		List<Order> datas = tblOrderMapper.findOrderByUserId("13266699268");
-		//TestCase.assertEquals(datas.isEmpty(), false);
+		TestCase.assertEquals(datas.isEmpty(), false);
 	}
 
 	@Rollback(false)
