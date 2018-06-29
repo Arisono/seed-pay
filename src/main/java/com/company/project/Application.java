@@ -8,6 +8,11 @@ import org.springframework.context.annotation.Bean;
 
 import com.company.project.config.StartupRunner;
 
+/**
+ * 项目入口函数
+ * @author Arison
+ *
+ */
 @SpringBootApplication
 public class Application  extends SpringBootServletInitializer{
     public static void main(String[] args) {
@@ -26,4 +31,3 @@ public class Application  extends SpringBootServletInitializer{
          return new StartupRunner();
      }
 }
-
