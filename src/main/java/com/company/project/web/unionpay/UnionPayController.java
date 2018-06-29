@@ -1,7 +1,9 @@
 package com.company.project.web.unionpay;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,9 +19,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
+import com.jpay.ext.kit.DateKit;
 import com.jpay.ext.kit.HttpKit;
 import com.jpay.unionpay.AcpService;
 import com.jpay.unionpay.LogUtil;
@@ -125,6 +129,114 @@ public class UnionPayController {
 				sf.append(key + "=" + value + "</br>");
 		}
 		return sf.toString();
+	}
+	
+	
+	/**
+	 * 订单状态查询
+	 * B2C跟B2B查询区别就在于bizType的不同
+	 */
+	@RequestMapping(value = "/query",method={RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public void query(HttpServletResponse response,
+			@RequestParam("orderId") String orderId,
+			@RequestParam("txnTime") String txnTime){
+		try {
+			Map<String, String> reqData = UnionPayApiConfig.builder()
+					.setTxnType("00")
+					.setTxnSubType("00")
+					.setBizType("000301")
+					.setMerId("777290058159097")
+					.setOrderId(orderId)
+					.setTxnTime(txnTime)
+					.createMap();
+			Map<String, String> rspData = UnionPayApi.singleQueryByMap(reqData);
+			if(!rspData.isEmpty()){
+				if(AcpService.validate(rspData, "UTF-8")){
+					logger.info("验证签名成功");
+					if("00".equals(rspData.get("respCode"))){//如果查询交易成功
+						//处理被查询交易的应答码逻辑
+						String origRespCode = rspData.get("origRespCode");
+						if("00".equals(origRespCode)){
+							//交易成功，更新商户订单状态
+						}else if("03".equals(origRespCode) ||
+								 "04".equals(origRespCode) ||
+								 "05".equals(origRespCode)){
+							//需再次发起交易状态查询交易 
+						}else{
+							//其他应答码为失败请排查原因
+						}
+					}else{//查询交易本身失败，或者未查到原交易，检查查询交易报文要素
+					}
+				}else{
+					logger.error("验证签名失败");
+					// 检查验证签名失败的原因
+				}
+			}else{
+				//未返回正确的http状态
+				logger.error("未获取到返回报文或返回http状态码非200");
+			}
+			String reqMessage = getHtmlResult(reqData);
+			String rspMessage = getHtmlResult(rspData);
+			response.getWriter().println("</br>请求报文:<br/>"+reqMessage+"<br/>" + "应答报文:</br>"+rspMessage+"");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 退款接口
+	 * @param response
+	 * @param origOryId  ：原始交易订单号
+	 * @param free ：退款金额
+	 */
+	@RequestMapping(value = "/refund",method={RequestMethod.POST,RequestMethod.GET})
+	@ResponseBody
+	public void refund(HttpServletResponse response,
+			@RequestParam("origOryId") String origOryId,
+			@RequestParam("free")  String free){
+		try {
+			Map<String, String> reqData = UnionPayApiConfig.builder()
+					.setTxnType("04") //交易类型 04-退货	31-消费撤销
+					.setTxnSubType("00") //交易子类型  默认00
+					.setBizType("000201") //业务类型 B2C网关支付，手机wap支付
+					.setChannelType("08") //渠道类型，07-PC，08-手机
+					.setMerId("777290058159097")//商户号
+					.setOrderId(String.valueOf(System.currentTimeMillis()))//商户订单号，8-40位数字字母，不能含“-”或“_”，可以自行定制规则，重新产生，不同于原消费
+					.setTxnTime(DateKit.toStr(new Date(), DateKit.UnionTimeStampPattern))//订单发送时间，格式为YYYYMMDDhhmmss，必须取当前时间，否则会报txnTime无效	
+					.setTxnAmt(free)
+					.setBackUrl(SDKConfig.getConfig().getBackUrl())
+					.setOrigQryId(origOryId) //****原消费交易返回的的queryId，可以从消费交易后台通知接口中或者交易状态查询接口中获取
+					.createMap();
+			Map<String, String> rspData = UnionPayApi.backRequestByMap(reqData);
+			if(!rspData.isEmpty()){
+				if(AcpService.validate(rspData, "UTF-8")){
+					logger.info("验证签名成功");
+					String respCode = rspData.get("respCode");
+					if("00".equals(respCode)){
+						//交易已受理，等待接收后台通知更新订单状态,也可以主动发起 查询交易确定交易状态。
+					}else if("03".equals(respCode)|| 
+							 "04".equals(respCode)||
+							 "05".equals(respCode)){
+						//后续需发起交易状态查询交易确定交易状态
+					}else{
+						//其他应答码为失败请排查原因
+					}
+				}else{
+					logger.error("验证签名失败");
+					// 检查验证签名失败的原因
+				}
+			}else{
+				//未返回正确的http状态
+				logger.error("未获取到返回报文或返回http状态码非200");
+			}
+			
+			String reqMessage = getHtmlResult(reqData);
+			String rspMessage = getHtmlResult(rspData);
+			response.getWriter().println("</br>请求报文:<br/>"+reqMessage+"<br/>" + "应答报文:</br>"+rspMessage+"");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**

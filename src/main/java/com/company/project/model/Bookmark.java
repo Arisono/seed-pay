@@ -43,6 +43,9 @@ public class Bookmark {
      * 书签-分类id-外键
      */
     private Integer classifyid;
+    
+    
+
 
     /**
      * 获取自增长id
@@ -169,4 +172,8 @@ public class Bookmark {
     public void setClassifyid(Integer classifyid) {
         this.classifyid = classifyid;
     }
+
+
+  
+    
 }

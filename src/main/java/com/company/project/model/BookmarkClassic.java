@@ -1,6 +1,8 @@
 package com.company.project.model;
 
 import java.util.Date;
+import java.util.List;
+
 import javax.persistence.*;
 
 @Table(name = "tbl_bookmark_classify")
@@ -27,6 +29,12 @@ public class BookmarkClassic {
      * 分类-用户id-外键
      */
     private Integer userid;
+    
+    
+    /**
+     * 一对多  一个分类有多个书签
+     */
+/*    private List<Bookmark> bMarkList;*/
 
     /**
      * 获取主键-自增长id
@@ -99,4 +107,13 @@ public class BookmarkClassic {
     public void setUserid(Integer userid) {
         this.userid = userid;
     }
+    
+    
+//	public List<Bookmark> getbMarkList() {
+//		return bMarkList;
+//	}
+//
+//	public void setbMarkList(List<Bookmark> bMarkList) {
+//		this.bMarkList = bMarkList;
+//	}
 }

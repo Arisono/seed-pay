@@ -5,6 +5,8 @@ import com.company.project.model.BookmarkClassic;
 import com.company.project.service.BookmarkClassicService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -47,7 +49,7 @@ public class BookmarkClassicController {
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    @PostMapping("/list")
+    @GetMapping("/list") 
     public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
         PageHelper.startPage(page, size);
         List<BookmarkClassic> list = bookmarkClassicService.findAll();
