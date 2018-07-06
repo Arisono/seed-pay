@@ -1,6 +1,8 @@
 package com.company.project.model;
 
 import java.util.Date;
+import java.util.List;
+
 import javax.persistence.*;
 
 @Table(name = "tbl_user")
@@ -48,6 +50,10 @@ public class User {
      */
     @Column(name = "register_date")
     private Date registerDate;
+    
+    
+    @Transient
+    private List<Sockets> sockets;
 
     /**
      * 获取自增长id
@@ -192,4 +198,14 @@ public class User {
     public void setRegisterDate(Date registerDate) {
         this.registerDate = registerDate;
     }
+
+	public List<Sockets> getSockets() {
+		return sockets;
+	}
+
+	public void setSockets(List<Sockets> sockets) {
+		this.sockets = sockets;
+	}
+    
+    
 }

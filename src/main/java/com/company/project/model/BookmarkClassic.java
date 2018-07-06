@@ -1,8 +1,6 @@
 package com.company.project.model;
 
 import java.util.Date;
-import java.util.List;
-
 import javax.persistence.*;
 
 @Table(name = "tbl_bookmark_classify")

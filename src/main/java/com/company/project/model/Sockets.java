@@ -40,6 +40,10 @@ public class Sockets {
      * socket-用户id-外键
      */
     private Integer userid;
+    
+    
+    @Transient
+    private User user;
 
     /**
      * 获取自增长id
@@ -148,4 +152,14 @@ public class Sockets {
     public void setUserid(Integer userid) {
         this.userid = userid;
     }
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+//    
+    
 }

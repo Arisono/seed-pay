@@ -1,6 +1,7 @@
 package com.company.project.socket;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -34,8 +35,9 @@ public class ServerResponseThread implements Runnable {
         this.socket = socket;
         this.socketServerResponseInterface = socketServerResponseInterface;
         this.userIP = socket.getInetAddress().getHostAddress();
+      
         System.out.println("用户：" + userIP
-                + " 加入了聊天室,当前在线人数:" + ConcurrentCache.getCacheSize());
+                + " 加入了聊天室,当前在线人数:" + ConcurrentCache.getCacheSize()+1);
         if(socket.isConnected()){
           this.socketServerResponseInterface.clientOnline(userIP);
         }
@@ -47,6 +49,7 @@ public class ServerResponseThread implements Runnable {
 	            receiveThread = new ReceiveThread();
 	            receiveThread.bufferedReader = new BufferedReader(
 	                    new InputStreamReader(socket.getInputStream(), "gbk"));
+	            receiveThread.inputStream=socket.getInputStream();
 	            receiveThread.start();
 
 	            //开启发送线程
@@ -145,6 +148,7 @@ public class ServerResponseThread implements Runnable {
     public class ReceiveThread extends Thread {
 
         private BufferedReader bufferedReader;
+        private InputStream inputStream;
         private boolean isCancel;
 
         @Override
@@ -157,6 +161,7 @@ public class ServerResponseThread implements Runnable {
                     }
 
                     String msg = SocketUtil.readFromStream(bufferedReader);
+                    System.out.println("服务器接收消息："+msg);
                     if (msg != null) {
                         if ("ping".equals(msg)) {
                             //收到心跳包

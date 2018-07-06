@@ -12,4 +12,5 @@
     <result column="socket_state" jdbcType="INTEGER" property="socketState" />
     <result column="userid" jdbcType="INTEGER" property="userid" />
   </resultMap>
+  
 </mapper>

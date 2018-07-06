@@ -1,14 +1,18 @@
 package com.conpany.project.dao;
 
+import java.io.IOException;
 import java.util.Date;
-
 import javax.annotation.Resource;
 
 import org.junit.Test;
 import org.springframework.test.annotation.Rollback;
 
+import com.alibaba.fastjson.JSON;
+import com.company.project.dao.SocketsMapper;
+import com.company.project.dao.UserMapper;
 import com.company.project.model.Sockets;
 import com.company.project.model.SocketsMessages;
+import com.company.project.model.User;
 import com.company.project.service.SocketsMessagesService;
 import com.company.project.service.SocketsService;
 import com.conpany.project.Tester;
@@ -20,6 +24,12 @@ public class SocketsDaoTest extends Tester {
 	
 	@Resource
 	private SocketsMessagesService socketsMessagesService;
+	
+	@Resource
+	private  SocketsMapper socketsMapper;
+	
+	@Resource
+	private UserMapper userMapper;
 	
 	
 	/**
@@ -107,5 +117,40 @@ public class SocketsDaoTest extends Tester {
 
 	
 
+    /**
+     * 根据用户来查询连接记录
+     * @throws IOException 
+     */
+    @Test
+    public void selectSocketByUser() throws IOException{
+    	
+      /**基于注解 演示一对多的映射关系**/
+      User userNew=userMapper.findUserWithSockets(1L);
+      System.out.println("userNew:"+JSON.toJSONString(userNew));
+      
+      /**基于注解 演示一对一的映射关系**/
+      Sockets socketWithUser=socketsMapper.findSocketsByID(2L);
+      System.out.println("socketWithUser:"+JSON.toJSONString(socketWithUser));
+      
+//    List<User> users=userMapper.findUsers();
+//    System.out.println("users:"+JSON.toJSONString(users));
+//      
+//    User user=  userMapper.findUserWithID(1L);
+//    System.out.println("user:"+JSON.toJSONString(user));
+//
+      
+//      List<Sockets> socket= socketsMapper.findSocketsByUserID(1L);
+//      System.out.println("socket:"+JSON.toJSONString(socket));
+//      
+     
+//      Sockets socketNew=socketsMapper.findSocketsByID(2L);
+//      System.out.println("socketNew:"+JSON.toJSONString(socketNew));
+//      
+//      List<Sockets> socketNews= socketsService.findAll();
+//      System.out.println("socketNews:"+JSON.toJSONString(socketNews));
+//      
+//      List<Sockets> socketNews2= socketsMapper.findSockets();
+//      System.out.println("socketNews2:"+JSON.toJSONString(socketNews2));
+    }
 
 }

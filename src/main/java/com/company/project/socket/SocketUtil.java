@@ -5,7 +5,7 @@ import java.util.Enumeration;
 
 public class SocketUtil {
 	
-	 public static int PORT = 10086;
+	 public static int PORT =10086;
 
 	    /**
 	     * 读数据
