@@ -1,6 +1,7 @@
 package com.company.project.socket;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -8,6 +9,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import org.springframework.util.StringUtils;
 
 
 public class ServerResponseThread implements Runnable {
@@ -37,7 +40,7 @@ public class ServerResponseThread implements Runnable {
         this.userIP = socket.getInetAddress().getHostAddress();
       
         System.out.println("用户：" + userIP
-                + " 加入了聊天室,当前在线人数:" + ConcurrentCache.getCacheSize()+1);
+                + " 加入了聊天室,当前在线人数:" + ConcurrentCache.getCacheSize());
         if(socket.isConnected()){
           this.socketServerResponseInterface.clientOnline(userIP);
         }
@@ -47,14 +50,17 @@ public class ServerResponseThread implements Runnable {
 	      try {
 	            //开启接收线程
 	            receiveThread = new ReceiveThread();
-	            receiveThread.bufferedReader = new BufferedReader(
-	                    new InputStreamReader(socket.getInputStream(), "gbk"));
+	            //字符流
+//	            receiveThread.bufferedReader = new BufferedReader(
+//	                    new InputStreamReader(socket.getInputStream(), "UTF-8"));
+	            //字节流
 	            receiveThread.inputStream=socket.getInputStream();
 	            receiveThread.start();
 
 	            //开启发送线程
 	            sendThread = new SendThread();
-	            sendThread.printWriter = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "gbk"), true);
+	            sendThread.dataOutputStream=new DataOutputStream(socket.getOutputStream());
+	           // sendThread.printWriter = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"), true);
 	            sendThread.start();
 
 	        } catch (Exception e) {
@@ -71,12 +77,12 @@ public class ServerResponseThread implements Runnable {
               if (receiveThread != null) {
                   receiveThread.isCancel = true;
                   receiveThread.interrupt();
-                  if (receiveThread.bufferedReader != null) {
+                  if (receiveThread.inputStream != null) {
                       SocketUtil.inputStreamShutdown(socket);
                      // System.out.println("before closeBufferedReader");
-                      SocketUtil.closeBufferedReader(receiveThread.bufferedReader);
+                      SocketUtil.closeInputStream(receiveThread.inputStream);
                       //System.out.println("after closeBufferedReader");
-                      receiveThread.bufferedReader = null;
+                      receiveThread.inputStream= null;
                   }
                   receiveThread = null;
                  // System.out.println("stop receiveThread");
@@ -86,11 +92,11 @@ public class ServerResponseThread implements Runnable {
                   sendThread.isCancel = true;
                   toNotifyAll(sendThread);
                   sendThread.interrupt();
-                  if (sendThread.printWriter != null) {
+                  if (sendThread.dataOutputStream != null) {
                       //防止写数据时停止，写完再停
-                      synchronized (sendThread.printWriter) {
-                          SocketUtil.closePrintWriter(sendThread.printWriter);
-                          sendThread.printWriter = null;
+                      synchronized (sendThread.dataOutputStream) {
+                          SocketUtil.closeOutputStream(sendThread.dataOutputStream);
+                          sendThread.dataOutputStream = null;
                       }
                   }
                   sendThread = null;
@@ -99,7 +105,7 @@ public class ServerResponseThread implements Runnable {
               
              ConcurrentCache.remove(userIP);  
               System.out.println("用户：" + userIP
-                      + " 退出,当前在线人数:" + ConcurrentCache.getCacheSize());
+                      + " 退出,当前在线人数:" + (ConcurrentCache.getCacheSize()-1));
           } catch (Exception e) {
               e.printStackTrace();
           }
@@ -147,7 +153,7 @@ public class ServerResponseThread implements Runnable {
      */
     public class ReceiveThread extends Thread {
 
-        private BufferedReader bufferedReader;
+        //private BufferedReader bufferedReader;
         private InputStream inputStream;
         private boolean isCancel;
 
@@ -160,8 +166,22 @@ public class ServerResponseThread implements Runnable {
                         break;
                     }
 
-                    String msg = SocketUtil.readFromStream(bufferedReader);
-                    System.out.println("服务器接收消息："+msg);
+                    //十进制字符串
+                   // String msg = SocketUtil.readFromStream(bufferedReader);
+                    String msg = null;
+                    try {
+                    	  msg=SocketUtil.readFromByeStream(inputStream);
+					} catch (Exception e) {
+					   e.printStackTrace();
+					   //关闭Socket
+					   //关闭IO流
+					   //接口回调
+					   //客户端下线
+                       socketServerResponseInterface.clientOffline(userIP);
+                       isCancel=true;                     
+					}
+                 
+                   System.out.println("服务器接收消息"+msg);
                     if (msg != null) {
                         if ("ping".equals(msg)) {
                             //收到心跳包
@@ -171,7 +191,10 @@ public class ServerResponseThread implements Runnable {
                             //收到客户端消息
                             //服务器发送消息给客户端
                             //addMessage(msg);
-                            socketServerResponseInterface.onSocketReceive(msg, userIP);
+                        	if (!StringUtils.isEmpty(msg)) {
+                        		 socketServerResponseInterface.onSocketReceive(msg, userIP);
+							}
+                           
                             //socketServerResponseInterface.clientOnline(userIP);
                         }
                     } else {
@@ -184,7 +207,7 @@ public class ServerResponseThread implements Runnable {
                 }
 
                 SocketUtil.inputStreamShutdown(socket);
-                SocketUtil.closeBufferedReader(bufferedReader);
+                SocketUtil.closeInputStream(inputStream);
                // System.out.println("ReceiveThread is finish");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -198,7 +221,8 @@ public class ServerResponseThread implements Runnable {
      */
     public class SendThread extends Thread {
 
-        private PrintWriter printWriter;
+      //  private PrintWriter printWriter;
+        private DataOutputStream dataOutputStream;
         private boolean isCancel;
 
         @Override
@@ -213,16 +237,23 @@ public class ServerResponseThread implements Runnable {
                     String msg = dataQueue.poll();
                     if (msg == null) {
                         toWaitAll(dataQueue);
-                    } else if (printWriter != null) {
-                        synchronized (printWriter) {
-                            SocketUtil.write2Stream(msg, printWriter);
+                    } else if (dataOutputStream != null) {
+                        synchronized (dataOutputStream) {
+                        	try {
+                        		  SocketUtil.write2Stream(msg, dataOutputStream);
+							} catch (Exception e) {
+								e.printStackTrace();
+								isCancel=true;
+							}
+                          
                         }
                     }
                    // System.out.println("SendThread");
                 }
 
                 SocketUtil.outputStreamShutdown(socket);
-                SocketUtil.closePrintWriter(printWriter);
+                //SocketUtil.closePrintWriter(printWriter);//字符流
+                SocketUtil.closeOutputStream(dataOutputStream);
                // System.out.println("SendThread is finish");
             } catch (Exception e) {
                 e.printStackTrace();

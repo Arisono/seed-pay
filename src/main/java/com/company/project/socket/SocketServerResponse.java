@@ -1,5 +1,6 @@
 package com.company.project.socket;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -71,6 +72,11 @@ public class SocketServerResponse implements SocketServerResponseInterface {
 		smMessages.setSocketType(0);// 接收数据
 		smMessages.setUserid(1);
 		socketsMessagesService.save(smMessages);
+		
+		//发消息
+		//byte [] hui={0x7e,0x00,0x0f,0x00,0x00,0x08,(byte) 0xdc,(byte) 0xb6,(byte) 0xb6,(byte) 0x9f,0x1f,0x47,0x00,(byte) 0xe2};   
+		//String hui="AE000F000008DCA9A9A200070008DCA9A9A2CD";
+	    sendMessage(clientIp, socketResult);
 	}
 
 	@Override
@@ -89,6 +95,7 @@ public class SocketServerResponse implements SocketServerResponseInterface {
 	 * @param msg
 	 */
 	public void sendMessage(String clientIp, String msg) {
+		System.out.println("IP对象："+clientIp+" 消息字节："+Arrays.toString(SocketUtil.hexStringToBytes(msg)));
 		ConcurrentCache.getCache(clientIp).addMessage(msg);
 	}
 

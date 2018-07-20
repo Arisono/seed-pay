@@ -18,7 +18,7 @@ public class ConcurrentCache {
 	}
 	
 	public static int getCacheSize(){
-		return serverManager.size();
+		return serverManager.size()+1;
 	}
 
 	public static ConcurrentHashMap<String, ServerResponseThread> getServerManager() {
