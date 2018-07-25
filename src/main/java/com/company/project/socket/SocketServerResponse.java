@@ -10,11 +10,13 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import com.company.project.model.Sockets;
 import com.company.project.model.SocketsMessages;
 import com.company.project.service.SocketsMessagesService;
 import com.company.project.service.SocketsService;
+import com.company.project.utils.BytesUtils;
 
 /**
  * 可以接收,发送socket消息的组件类
@@ -64,19 +66,19 @@ public class SocketServerResponse implements SocketServerResponseInterface {
 	public void onSocketReceive(String socketResult, String clientIp) {
 		log.info(clientIp + " 发来消息...");
 		log.info("消息：" + socketResult);
-		// 这一步，有很多业务操作，非常关键
-		SocketsMessages smMessages = new SocketsMessages();
-		smMessages.setSocketData(socketResult);
-		smMessages.setSocketId(clientIp);
-		smMessages.setSocketTime(new Date());
-		smMessages.setSocketType(0);// 接收数据
-		smMessages.setUserid(1);
-		socketsMessagesService.save(smMessages);
 		
-		//发消息
-		//byte [] hui={0x7e,0x00,0x0f,0x00,0x00,0x08,(byte) 0xdc,(byte) 0xb6,(byte) 0xb6,(byte) 0x9f,0x1f,0x47,0x00,(byte) 0xe2};   
-		//String hui="AE000F000008DCA9A9A200070008DCA9A9A2CD";
-	    sendMessage(clientIp, socketResult);
+		distributeClient(socketResult,clientIp);
+		// 这一步，有很多业务操作，非常关键
+//		SocketsMessages smMessages = new SocketsMessages();
+//		smMessages.setSocketData(socketResult);
+//		smMessages.setSocketId(clientIp);
+//		smMessages.setSocketTime(new Date());
+//		smMessages.setSocketType(0);// 接收数据
+//		smMessages.setUserid(1);
+//		socketsMessagesService.save(smMessages);
+
+		// 发消息
+//		sendMessage(clientIp, socketResult);
 	}
 
 	@Override
@@ -95,7 +97,8 @@ public class SocketServerResponse implements SocketServerResponseInterface {
 	 * @param msg
 	 */
 	public void sendMessage(String clientIp, String msg) {
-		System.out.println("IP对象："+clientIp+" 消息字节："+Arrays.toString(SocketUtil.hexStringToBytes(msg)));
+		System.out.println("IP对象：" + clientIp + " 消息字节："
+				+ Arrays.toString(SocketUtil.hexStringToBytes(msg)));
 		ConcurrentCache.getCache(clientIp).addMessage(msg);
 	}
 
@@ -126,6 +129,149 @@ public class SocketServerResponse implements SocketServerResponseInterface {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * 业务功能 命令转发 服务器回应客户端指令 7e 00 0f 00 00 08 dc b6 b6 9f 00 07 00 08 dc b6 b6
+	 * 9f 72 20-24 是指令类型
+	 */
+	/**
+	 * @param hex
+	 * @param clientIP
+	 */
+	public void distributeClient(String hex,String clientIP) {
+		if (!StringUtils.isEmpty(hex)) {
+			//头部信息
+			String head=hex.substring(0,2);
+			//是否加密
+			String isEncrypt=hex.substring(6, 8);
+			//果蔬机编号
+			String deviceNumber=hex.substring(8, 8+6*2);
+			//命令类型
+			String command = hex.substring(20, 24);
+			//计算数据部分
+			String length=hex.substring(2, 6);	
+			//数据长度  减去9个字节的固定长度
+		    int dataLength=BytesUtils.bytesToInt(BytesUtils.hexStringToBytes(length), 0, 2)-9;
+			String data=hex.substring(24, 24+2*dataLength);
+			
+			System.out.println("总字节数："+(dataLength+9+4)+" 机器编号:"+deviceNumber+" 命令类型："+command+" 数据："+data);
+			switch (command) {
+				case "0001" ://销售订单------回复指令  8001
+					//保存销售订单！
+					String responseData=data;
+					String resCommand="8001";
+				
+					String result = getResponseCommand(head, isEncrypt,deviceNumber, responseData, resCommand);
+					System.out.println("result:"+result);
+					sendMessage(clientIP, result);
+					break;
+				case "0002" ://机器工作状态------回复指令  8002
+					responseData="00"; //成功状态
+					resCommand="8002";
+				
+					result = getResponseCommand(head, isEncrypt,deviceNumber, responseData, resCommand);
+					System.out.println("result:"+result);
+					sendMessage(clientIP, result);
+					break;
+				case "0003" ://机器货物状态------回复指令  8003
+					responseData="00"; //成功状态
+					resCommand="8003";
+				
+					result = getResponseCommand(head, isEncrypt,deviceNumber, responseData, resCommand);
+					System.out.println("result:"+result);
+					sendMessage(clientIP, result);
+					break;
+				case "0004" ://用户开锁------回复指令  8004
+					responseData="00"; 
+					resCommand="8004";
+				
+					result = getResponseCommand(head, isEncrypt,deviceNumber, responseData, resCommand);
+					System.out.println("result:"+result);
+					sendMessage(clientIP, result);
+					break;
+				case "0005" ://用户结算------回复指令  8005
+					responseData="00"; //成功状态
+					resCommand="8005";
+				
+					result = getResponseCommand(head, isEncrypt,deviceNumber, responseData, resCommand);
+					System.out.println("result:"+result);
+					sendMessage(clientIP, result);
+					break;
+				case "0006" ://程序升级服务器发起------回复指令  8006
+					responseData="00"; //成功状态
+					resCommand="8006";
+				
+					result = getResponseCommand(head, isEncrypt,deviceNumber, responseData, resCommand);
+					System.out.println("result:"+result);
+					sendMessage(clientIP, result);
+					break;
+				case "0007" ://机器型号  -上线指令------回复指令  8007              
+					//第一步：保存设备机器ID
+					//第二步：回复指令给客户端  00:不加密 (需要计算校验和)
+					responseData="00";
+					resCommand="8007";
+					
+					result = getResponseCommand(head, isEncrypt,deviceNumber, responseData, resCommand);
+					System.out.println("result:"+result);
+					sendMessage(clientIP, result);
+					break;
+				case "0008" ://刷充值卡信息数据------回复指令  8008
+
+					break;
+				case "0009" ://礼品货舱------回复指令  8009
+					responseData="00";
+					resCommand="8009";
+					
+					result = getResponseCommand(head, isEncrypt,deviceNumber, responseData, resCommand);
+					System.out.println("result:"+result);
+					sendMessage(clientIP, result);
+					break;
+				case "000A" ://请求数据区密------回复指令  800A
+
+					break;
+				case "000B" ://门的状态------回复指令  800B
+					responseData="00";
+					resCommand="800B";
+					
+					result = getResponseCommand(head, isEncrypt,deviceNumber, responseData, resCommand);
+					System.out.println("result:"+result);
+					sendMessage(clientIP, result);
+					break;
+				case "000C" ://用户请求结算------回复指令  800C
+					responseData=data;
+					resCommand="800B";
+					
+					result = getResponseCommand(head, isEncrypt,deviceNumber, responseData, resCommand);
+					System.out.println("result:"+result);
+					sendMessage(clientIP, result);
+					break;
+				default :
+					break;
+			}
+		}
+
+	}
+
+	/**
+	 * 根据发送的数据来封装十六进制字符串格式数据   数据长度 两个字节
+	 * @param head
+	 * @param isEncrypt
+	 * @param deviceNumber
+	 * @param responseData
+	 * @param resCommand
+	 * @return
+	 */
+	private String getResponseCommand(String head, String isEncrypt,
+			String deviceNumber, String responseData, String resCommand) {
+		String len=BytesUtils.bytesToHex(BytesUtils.intToBytes((responseData.length()/2+9),2));
+		String result=head+len+isEncrypt+deviceNumber+resCommand+responseData;
+		String xiaoyanhe=result+"59";
+		//计算校验和  一个字节
+		String sum=BytesUtils.bytesToHex(BytesUtils.SumCheck(BytesUtils.hexStringToBytes(xiaoyanhe), 1));
+		System.out.println("校验和："+sum);
+		result=result+sum;
+		return result;
 	}
 
 }
