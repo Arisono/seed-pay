@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.company.project.model.Sockets;
-import com.company.project.model.SocketsMessages;
 import com.company.project.service.SocketsMessagesService;
 import com.company.project.service.SocketsService;
 import com.company.project.utils.BytesUtils;
@@ -27,12 +26,18 @@ import com.company.project.utils.BytesUtils;
 @Component
 public class SocketServerResponse implements SocketServerResponseInterface {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(SocketServerResponse.class);
+	private static final Logger log = LoggerFactory.getLogger(SocketServerResponse.class);
 	@Resource
 	private SocketsService socketsService;// 管理sockets连接状态
 	@Resource
 	private SocketsMessagesService socketsMessagesService;// 管理sockets消息记录
+	
+	//数据协议部分
+	private String head;
+	private String isEncrypt;
+	private String deviceNumber;
+	
+
 
 	@Override
 	public void clientOnline(String clientIp) {
@@ -40,7 +45,7 @@ public class SocketServerResponse implements SocketServerResponseInterface {
 		try {
 			System.out.println("-----------------------------------------");
 			System.out.println("连接成功！" + clientIp + " time:" + new Date());
-			// clientIp 在数据库表中是唯一的，重复插入会报异常。
+			//clientIp 在数据库表中是唯一的，重复插入会报异常。
 			Sockets s0 = socketsService.findBy("socketIp", clientIp);
 			if (s0 != null) {
 				// 更新上线时间
@@ -97,8 +102,7 @@ public class SocketServerResponse implements SocketServerResponseInterface {
 	 * @param msg
 	 */
 	public void sendMessage(String clientIp, String msg) {
-		System.out.println("IP对象：" + clientIp + " 消息字节："
-				+ Arrays.toString(SocketUtil.hexStringToBytes(msg)));
+		System.out.println("IP对象：" + clientIp + " 消息字节："+ Arrays.toString(SocketUtil.hexStringToBytes(msg)));
 		ConcurrentCache.getCache(clientIp).addMessage(msg);
 	}
 
@@ -142,11 +146,12 @@ public class SocketServerResponse implements SocketServerResponseInterface {
 	public void distributeClient(String hex,String clientIP) {
 		if (!StringUtils.isEmpty(hex)) {
 			//头部信息
-			String head=hex.substring(0,2);
+			 head=hex.substring(0,2);
 			//是否加密
-			String isEncrypt=hex.substring(6, 8);
+			 isEncrypt=hex.substring(6, 8);
 			//果蔬机编号
-			String deviceNumber=hex.substring(8, 8+6*2);
+			 deviceNumber=hex.substring(8, 8+6*2);
+			 
 			//命令类型
 			String command = hex.substring(20, 24);
 			//计算数据部分
@@ -162,7 +167,7 @@ public class SocketServerResponse implements SocketServerResponseInterface {
 					String responseData=data;
 					String resCommand="8001";
 				
-					String result = getResponseCommand(head, isEncrypt,deviceNumber, responseData, resCommand);
+					String result = getResponseCommand( responseData, resCommand);
 					System.out.println("result:"+result);
 					sendMessage(clientIP, result);
 					break;
@@ -170,7 +175,7 @@ public class SocketServerResponse implements SocketServerResponseInterface {
 					responseData="00"; //成功状态
 					resCommand="8002";
 				
-					result = getResponseCommand(head, isEncrypt,deviceNumber, responseData, resCommand);
+					result = getResponseCommand(responseData, resCommand);
 					System.out.println("result:"+result);
 					sendMessage(clientIP, result);
 					break;
@@ -178,23 +183,18 @@ public class SocketServerResponse implements SocketServerResponseInterface {
 					responseData="00"; //成功状态
 					resCommand="8003";
 				
-					result = getResponseCommand(head, isEncrypt,deviceNumber, responseData, resCommand);
+					result = getResponseCommand(responseData, resCommand);
 					System.out.println("result:"+result);
 					sendMessage(clientIP, result);
 					break;
 				case "0004" ://用户开锁------回复指令  8004
-					responseData="00"; 
-					resCommand="8004";
-				
-					result = getResponseCommand(head, isEncrypt,deviceNumber, responseData, resCommand);
-					System.out.println("result:"+result);
-					sendMessage(clientIP, result);
+					
 					break;
 				case "0005" ://用户结算------回复指令  8005
 					responseData="00"; //成功状态
 					resCommand="8005";
 				
-					result = getResponseCommand(head, isEncrypt,deviceNumber, responseData, resCommand);
+					result = getResponseCommand( responseData, resCommand);
 					System.out.println("result:"+result);
 					sendMessage(clientIP, result);
 					break;
@@ -202,7 +202,7 @@ public class SocketServerResponse implements SocketServerResponseInterface {
 					responseData="00"; //成功状态
 					resCommand="8006";
 				
-					result = getResponseCommand(head, isEncrypt,deviceNumber, responseData, resCommand);
+					result = getResponseCommand(responseData, resCommand);
 					System.out.println("result:"+result);
 					sendMessage(clientIP, result);
 					break;
@@ -212,7 +212,7 @@ public class SocketServerResponse implements SocketServerResponseInterface {
 					responseData="00";
 					resCommand="8007";
 					
-					result = getResponseCommand(head, isEncrypt,deviceNumber, responseData, resCommand);
+					result = getResponseCommand( responseData, resCommand);
 					System.out.println("result:"+result);
 					sendMessage(clientIP, result);
 					break;
@@ -223,7 +223,7 @@ public class SocketServerResponse implements SocketServerResponseInterface {
 					responseData="00";
 					resCommand="8009";
 					
-					result = getResponseCommand(head, isEncrypt,deviceNumber, responseData, resCommand);
+					result = getResponseCommand(responseData, resCommand);
 					System.out.println("result:"+result);
 					sendMessage(clientIP, result);
 					break;
@@ -234,7 +234,7 @@ public class SocketServerResponse implements SocketServerResponseInterface {
 					responseData="00";
 					resCommand="800B";
 					
-					result = getResponseCommand(head, isEncrypt,deviceNumber, responseData, resCommand);
+					result = getResponseCommand( responseData, resCommand);
 					System.out.println("result:"+result);
 					sendMessage(clientIP, result);
 					break;
@@ -242,7 +242,7 @@ public class SocketServerResponse implements SocketServerResponseInterface {
 					responseData=data;
 					resCommand="800B";
 					
-					result = getResponseCommand(head, isEncrypt,deviceNumber, responseData, resCommand);
+					result = getResponseCommand(responseData, resCommand);
 					System.out.println("result:"+result);
 					sendMessage(clientIP, result);
 					break;
@@ -252,7 +252,20 @@ public class SocketServerResponse implements SocketServerResponseInterface {
 		}
 
 	}
+   
+	
+	
 
+
+	/**
+	 * 公共命令
+	 */
+	public void actionDevid(String clientIP,String responseData,String resCommand){
+		String result = getResponseCommand(responseData, resCommand);
+		System.out.println("result:"+result);
+		sendMessage(clientIP, result);
+	}
+	
 	/**
 	 * 根据发送的数据来封装十六进制字符串格式数据   数据长度 两个字节
 	 * @param head
@@ -262,8 +275,7 @@ public class SocketServerResponse implements SocketServerResponseInterface {
 	 * @param resCommand
 	 * @return
 	 */
-	private String getResponseCommand(String head, String isEncrypt,
-			String deviceNumber, String responseData, String resCommand) {
+	private String getResponseCommand(String responseData, String resCommand) {
 		String len=BytesUtils.bytesToHex(BytesUtils.intToBytes((responseData.length()/2+9),2));
 		String result=head+len+isEncrypt+deviceNumber+resCommand+responseData;
 		String xiaoyanhe=result+"59";

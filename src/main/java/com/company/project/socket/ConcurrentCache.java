@@ -3,8 +3,10 @@ package com.company.project.socket;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ConcurrentCache {
+	
 	private static ConcurrentHashMap<String, ServerResponseThread> 
 	 serverManager=new ConcurrentHashMap<>();
+	
 	public static void put(String key,  ServerResponseThread value){
 		serverManager.put(key, value);
 	};

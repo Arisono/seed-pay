@@ -1,11 +1,7 @@
 package com.company.project.socket;
 
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -22,7 +18,7 @@ public class ServerResponseThread implements Runnable {
     //发送数据队列  生产消费者模式
     private volatile ConcurrentLinkedQueue<String> dataQueue = new ConcurrentLinkedQueue<>();
     //这个可以去除
-   // private static ConcurrentHashMap<String, Socket> onLineClient = new ConcurrentHashMap<>();
+    //private static ConcurrentHashMap<String, Socket> onLineClient = new ConcurrentHashMap<>();
 
     @SuppressWarnings("unused")
 	private long lastReceiveTime = System.currentTimeMillis();
@@ -39,8 +35,7 @@ public class ServerResponseThread implements Runnable {
         this.socketServerResponseInterface = socketServerResponseInterface;
         this.userIP = socket.getInetAddress().getHostAddress();
       
-        System.out.println("用户：" + userIP
-                + " 加入了聊天室,当前在线人数:" + ConcurrentCache.getCacheSize());
+        System.out.println("用户：" + userIP+ " 加入了聊天室,当前在线人数:" + ConcurrentCache.getCacheSize());
         if(socket.isConnected()){
           this.socketServerResponseInterface.clientOnline(userIP);
         }

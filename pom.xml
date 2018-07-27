@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.lihengming</groupId>
-    <artifactId>Sockets</artifactId>
+    <artifactId>wxService</artifactId>
     <version>1.0</version>
     <packaging>war</packaging>
 
-	<name>Sockets</name>
-	<description>Sockets</description>
+	<name>wxService</name>
+	<description>wxService</description>
 
     <properties>
         <java.version>1.8</java.version>
@@ -203,6 +203,12 @@
         	<artifactId>spring-boot-configuration-processor</artifactId>
         	<optional>true</optional>
         </dependency>
+        <dependency>
+			  <groupId>com.github.kevinsawicki</groupId>
+			  <artifactId>http-request</artifactId>
+			  <version>6.0</version>
+  		</dependency>
+         
     </dependencies>
 
     <build>
@@ -220,7 +226,7 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
 				    <encoding>UTF-8</encoding>
-					<warName>Sockets</warName>
+					<warName>wxService</warName>
 				</configuration>
 			</plugin>
            <!--  <plugin>

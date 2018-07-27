@@ -22,6 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/sockets")
 public class SocketsController {
+	
     @Resource
     private SocketsService socketsService;
     
@@ -75,11 +76,45 @@ public class SocketsController {
     
     
     
+    /**
+     * 强制断开设备连接
+     * @param ip
+     * @return
+     */
     @PostMapping("/stop")
     public Result stop(@RequestParam String ip){
 	  sockets.stopSocket(ip);
 	  return ResultGenerator.genSuccessResult();
     }
     
+    
+   
+    /**
+     * 开锁命令
+     * @return
+     */
+    @GetMapping("/openDevice")
+    public  Result openDevice(@RequestParam String ip){
+    	sockets.actionDevid(ip,"01020f0f01","8004");
+    	return ResultGenerator.genSuccessResult();
+    }
+    
+    
+    /**
+     * 用户请求结算
+     * @return
+     */
+    @GetMapping("/payDevice")
+    public Result payDevice(@RequestParam String ip){
+    	sockets.actionDevid(ip,"01020f0f01","800C");
+    	return ResultGenerator.genSuccessResult();
+    }
+    
+    
+    @GetMapping("/actionDevice")
+    public Result payDevice(@RequestParam String ip,@RequestParam String data,@RequestParam String command){
+    	sockets.actionDevid(ip,data,command);
+    	return ResultGenerator.genSuccessResult();
+    }
     
 }
