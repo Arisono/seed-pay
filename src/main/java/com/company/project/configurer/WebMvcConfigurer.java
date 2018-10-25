@@ -60,8 +60,8 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
 
 
     //统一异常处理
-    @Override
-    public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
+//    @Override
+//    public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
 //        exceptionResolvers.add(new HandlerExceptionResolver() {
 //            public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception e) {
 //                Result result = new Result();
@@ -92,7 +92,7 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
 //            }
 //
 //        });
-    }
+//    }
 
     
     

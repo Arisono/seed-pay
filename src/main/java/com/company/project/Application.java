@@ -41,7 +41,7 @@ public class Application  extends SpringBootServletInitializer{
         return new EmbeddedServletContainerCustomizer() {
             @Override
             public void customize(ConfigurableEmbeddedServletContainer container) {
-
+                System.out.println("---------设置404页面-------------");
                 ErrorPage error404Page = new ErrorPage(HttpStatus.NOT_FOUND, "/index.html");
 
                 container.addErrorPages(error404Page);
