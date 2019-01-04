@@ -22,7 +22,7 @@ public class StartupRunner implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		 logger.info("startup runner");
 		 //银联加载配置
-		 SDKConfig.getConfig().loadPropertiesFromSrc();// 从classpath加载acp_sdk.properties文件
+		 //SDKConfig.getConfig().loadPropertiesFromSrc();// 从classpath加载acp_sdk.properties文件
 		
 		 //开启socket服务
 		 ExecutorService executorService = Executors.newCachedThreadPool();

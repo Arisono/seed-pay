@@ -15,10 +15,10 @@ import com.company.project.model.Message;
 import com.company.project.model.Response;
 import com.company.project.model.ToUserMessage;
 
-@SuppressWarnings("deprecation")
-@Controller
-@ServerEndpoint("/endpointChat/websocket")  
-public class WebSocketController {
+//@SuppressWarnings("deprecation")
+//@Controller
+//@ServerEndpoint("/")  
+public class WebSocketStompController {
 	@Autowired
 	SimpMessagingTemplate template;
 	
@@ -30,7 +30,6 @@ public class WebSocketController {
 	@MessageMapping("/connectioned")
 	@SendTo("/topic/getResponse")
 	public Response connectionSuccess() {
-
 		return new Response("作者在线：您需要帮助吗？");
 	}
 
@@ -59,7 +58,6 @@ public class WebSocketController {
 		// 方法用于点对点测试
 		// System.out.println(toUserMessage.getUserId());
 		// System.out.println("p:"+p.getName());
-		template.convertAndSendToUser("13266699268", "/message",
-				toUserMessage.getMessage());
+		template.convertAndSendToUser("13266699268", "/message",toUserMessage.getMessage());
 	}
 }

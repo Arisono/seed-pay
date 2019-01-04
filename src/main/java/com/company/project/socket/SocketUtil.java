@@ -11,7 +11,7 @@ import com.company.project.utils.BytesUtils;
 
 public class SocketUtil {
 	
-	 public static int PORT =10086;
+	 public static int PORT =10099;
 	 
 	 
 	 /**
