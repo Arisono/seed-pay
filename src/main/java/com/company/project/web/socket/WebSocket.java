@@ -1,10 +1,12 @@
 package com.company.project.web.socket;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.websocket.EncodeException;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
@@ -26,10 +28,13 @@ public class WebSocket {
 	
 	 @OnOpen
 	 public void onOpen(Session session) {
+		 session.setMaxTextMessageBufferSize(10 * 1024 * 1024);
+	     session.setMaxBinaryMessageBufferSize(10 * 1024 * 1024);
 		 this.session=session;
 		 System.out.println("设备上线:"+WebSocketUtil.getRemoteAddressStr(session));
 		 System.out.println("设备IP："+WebSocketUtil.getRemoteIPAddress(session));
 	     sessionPool.put(WebSocketUtil.getRemoteIPAddress(session), session);
+	     
 	 }
 	 
 	 @OnClose
@@ -56,14 +61,19 @@ public class WebSocket {
 	
 	public synchronized static void sendMessage(String message,String ip){
 		Session s = sessionPool.get(ip);
-		if(s!=null){
-			try {
-				System.out.println("服务器向"+ip+"发送消息："+message);
-				s.getBasicRemote().sendText(message);
-			} catch (IOException e) {
-				e.printStackTrace();
+		synchronized(s){
+			if(s!=null){
+				try {
+					System.out.println("服务器向"+ip+"发送消息："+message);
+					s.getBasicRemote().sendBinary(ByteBuffer.wrap(message.getBytes()));
+					s.getBasicRemote().sendText(message);
+			
+				} catch (Exception e ) {
+					e.printStackTrace();
+				}
 			}
 		}
+		
 	}
 	
 	
