@@ -18,6 +18,7 @@ import com.company.project.model.ToUserMessage;
 //@SuppressWarnings("deprecation")
 //@Controller
 //@ServerEndpoint("/")  
+@SuppressWarnings({"unused", "deprecation"})
 public class WebSocketStompController {
 	@Autowired
 	SimpMessagingTemplate template;

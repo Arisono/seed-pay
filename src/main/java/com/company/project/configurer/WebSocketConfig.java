@@ -26,6 +26,7 @@ import tk.mybatis.mapper.util.StringUtil;
  */
 //@Configuration
 //@EnableWebSocketMessageBroker
+@SuppressWarnings("unused")
 public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer  {
 	@Autowired
 	SimpMessagingTemplate template;

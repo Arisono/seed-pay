@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 
 //@ControllerAdvice
+@SuppressWarnings("unused")
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)

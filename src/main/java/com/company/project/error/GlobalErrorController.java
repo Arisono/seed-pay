@@ -16,6 +16,7 @@ import org.springframework.web.servlet.view.RedirectView;
  *
  * @author Arison
  */
+@SuppressWarnings("unused")
 @Controller
 @RequestMapping("${server.error.path:/error}")
 public class GlobalErrorController implements ErrorController  {

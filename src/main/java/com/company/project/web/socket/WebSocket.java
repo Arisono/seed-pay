@@ -17,8 +17,10 @@ import javax.websocket.server.ServerEndpoint;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import com.alibaba.fastjson.JSON;
 import com.company.project.utils.WebSocketUtil;
 
+@SuppressWarnings("unused")
 @ServerEndpoint(value = "/websocket")
 @Component 
 public class WebSocket {
@@ -46,6 +48,12 @@ public class WebSocket {
 	 @OnMessage
 	 public void onMessage(String message, Session session) {
 		 System.out.println("设备 "+WebSocketUtil.getRemoteAddressStr(session)+" 发来消息：\n"+message);
+//		 try {
+//			 String imageBase64= JSON.parseObject(message).getJSONObject("data").getString("image"); 
+//			 System.out.println(imageBase64);
+//		} catch (Exception e) {	
+//			e.printStackTrace();
+//		}
 	 }
 	 
 	 @OnError

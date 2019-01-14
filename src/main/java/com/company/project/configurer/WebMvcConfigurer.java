@@ -38,6 +38,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 /**
  * Spring MVC 配置
  */
+@SuppressWarnings("unused")
 @Configuration
 public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
 
