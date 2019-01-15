@@ -22,89 +22,92 @@ import com.company.project.utils.WebSocketUtil;
 
 @SuppressWarnings("unused")
 @ServerEndpoint(value = "/websocket")
-@Component 
+@Component
 public class WebSocket {
- 
-	private static Map<String,Session> sessionPool = new HashMap<String,Session>();
+
+	private static Map<String, Session> sessionPool = new HashMap<String, Session>();
 	private Session session;
-	
-	 @OnOpen
-	 public void onOpen(Session session) {
-		 session.setMaxTextMessageBufferSize(10 * 1024 * 1024);
-	     session.setMaxBinaryMessageBufferSize(10 * 1024 * 1024);
-		 this.session=session;
-		 System.out.println("设备上线:"+WebSocketUtil.getRemoteAddressStr(session));
-		 System.out.println("设备IP："+WebSocketUtil.getRemoteIPAddress(session));
-	     sessionPool.put(WebSocketUtil.getRemoteIPAddress(session), session);
-	     
-	 }
-	 
-	 @OnClose
-	 public void onClose() {
-		 System.out.println("设备下线："+WebSocketUtil.getRemoteAddressStr(session));
-		 sessionPool.remove(WebSocketUtil.getRemoteIPAddress(session));
-	 }
-	 
-	 @OnMessage
-	 public void onMessage(String message, Session session) {
-		 System.out.println("设备 "+WebSocketUtil.getRemoteAddressStr(session)+" 发来消息：\n"+message);
-//		 try {
-//			 String imageBase64= JSON.parseObject(message).getJSONObject("data").getString("image"); 
-//			 System.out.println(imageBase64);
-//		} catch (Exception e) {	
-//			e.printStackTrace();
-//		}
-	 }
-	 
-	 @OnError
-	 public void onError(Session session, Throwable error) {
-	      System.out.println("发生错误:"+WebSocketUtil.getRemoteAddressStr(session));
-	      error.printStackTrace();
-	 }
-	 
+
+	@OnOpen
+	public void onOpen(Session session) {
+		session.setMaxTextMessageBufferSize(10 * 1024 * 1024);
+		session.setMaxBinaryMessageBufferSize(10 * 1024 * 1024);
+		this.session = session;
+		System.out
+				.println("设备上线:" + WebSocketUtil.getRemoteAddressStr(session));
+		System.out.println("设备IP：" + WebSocketUtil.getRemoteIPAddress(session));
+		sessionPool.put(WebSocketUtil.getRemoteIPAddress(session), session);
+
+	}
+
+	@OnClose
+	public void onClose() {
+		System.out
+				.println("设备下线：" + WebSocketUtil.getRemoteAddressStr(session));
+		sessionPool.remove(WebSocketUtil.getRemoteIPAddress(session));
+	}
+
+	@OnMessage
+	public void onMessage(String message, Session session) {
+		System.out.println("设备 " + WebSocketUtil.getRemoteAddressStr(session)
+				+ " 发来消息：\n" + message);
+		// try {
+		// String imageBase64=
+		// JSON.parseObject(message).getJSONObject("data").getString("image");
+		// System.out.println(imageBase64);
+		// } catch (Exception e) {
+		// e.printStackTrace();
+		// }
+	}
+
+	@OnError
+	public void onError(Session session, Throwable error) {
+		System.out
+				.println("发生错误:" + WebSocketUtil.getRemoteAddressStr(session));
+		// error.printStackTrace();
+	}
+
 	public static synchronized int getOnlineCount() {
 		return sessionPool.size();
 	}
 
-	
-	public synchronized static void sendMessage(String message,String ip){
+	public synchronized static void sendMessage(String message, String ip) {
 		Session s = sessionPool.get(ip);
-		synchronized(s){
-			if(s!=null){
+		synchronized (s) {
+			if (s != null) {
 				try {
-					System.out.println("服务器向"+ip+"发送消息："+message);
-					s.getBasicRemote().sendBinary(ByteBuffer.wrap(message.getBytes()));
+					System.out.println("服务器向" + ip + "发送消息：" + message);
+					s.getBasicRemote()
+							.sendBinary(ByteBuffer.wrap(message.getBytes()));
 					s.getBasicRemote().sendText(message);
-			
-				} catch (Exception e ) {
+
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		}
-		
+
 	}
-	
-	
-	public synchronized static void setSessionTimeOut(long time,String ip){
+
+	public synchronized static void setSessionTimeOut(long time, String ip) {
 		Session s = sessionPool.get(ip);
 		s.setMaxIdleTimeout(time);
 	}
 
-	
-	public static String[] getSessionIP(Map<String, Session> map){
-        StringBuilder str=new StringBuilder();
+	public static String[] getSessionIP(Map<String, Session> map) {
+		StringBuilder str = new StringBuilder();
 		for (Entry<String, Session> entry : map.entrySet()) {
-		   str.append(entry.getKey()+",");
+			str.append(entry.getKey() + ",");
 		}
-		
-        if(StringUtils.isEmpty(str.toString())){
-    	  return new String[]{};
-        }
+
+		if (StringUtils.isEmpty(str.toString())) {
+			return new String[]{};
+		}
 		return str.toString().split(",");
 	}
-	
+
 	public static Map<String, Session> getSessionPool() {
 		return sessionPool;
 	}
-	
+
 }

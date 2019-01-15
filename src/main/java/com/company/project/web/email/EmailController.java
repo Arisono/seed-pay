@@ -17,6 +17,10 @@ public class EmailController {
 	@Autowired  
     JavaMailSender jms;
 	
+    /**
+     * 邮件单发
+     * @return
+     */
     @GetMapping("/send")
 	public Result send(){
     	//建立邮件消息  
@@ -30,11 +34,15 @@ public class EmailController {
 		//发送的内容  
 		mainMessage.setText("请注意查收：欢迎访问网站  https://www.yundashi168.com/");
 		jms.send(mainMessage);
-		
+
 		return  ResultGenerator.genSuccessResult(mainMessage);
     }
     
     
+    /**
+     * 邮件群发
+     * @return
+     */
     @GetMapping("/sendAll")
     public Result sendAll(){
     	JavaMailSenderImpl mailSender = new JavaMailSenderImpl();//直接生产一个实例

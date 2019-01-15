@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
+ * 原生socket服务
  * @author Arison
  *
  */
@@ -33,7 +34,7 @@ public class ServerMain {
 	    ExecutorService executorService = Executors.newCachedThreadPool();
 	    log.info("服务端 " + SocketUtil.getIP() +":"+SocketUtil.PORT+  " 运行中...\n");
 	    try {
-	            serverSocket = new ServerSocket(SocketUtil.PORT);
+	    	   serverSocket = new ServerSocket(SocketUtil.PORT);
 	            while (isStart) {
 	                Socket socket = serverSocket.accept();
 	                socket.setSoTimeout(600000);//设定输入流读取阻塞超时时间(600秒收不到客户端消息判定断线)
@@ -43,20 +44,33 @@ public class ServerMain {
 	                    ConcurrentCache.put(serverResponseThread.getUserIP(), serverResponseThread);
 	                }
 	            }
-	            serverSocket.close();
+//	            if(!serverSocket.isClosed()){
+//		        	serverSocket.close();	
+//		        }	
+	            System.out.println("socket服务器关闭！");
 	        } catch (IOException e) {
-	            e.printStackTrace();
+//	            e.printStackTrace();
 	        } finally {
-	            if (serverSocket != null) {
-	                try {
-	                    isStart = false;
-	                    serverSocket.close();
-	                    serverResponseThread.stop();
-	                } catch (IOException e) {
-	                    e.printStackTrace();
-	                }
-	            }
+	            closeSocket();
 	        }
 
 	}
+
+	public void closeSocket() {
+		if (serverSocket != null) {
+		    try {
+		        isStart = false;//关闭socket服务
+		        if(!serverSocket.isClosed()){
+		        	serverSocket.close();	
+		        }		      
+		        if(serverResponseThread!=null){
+		        	 serverResponseThread.stop();
+		        }
+		    } catch (IOException e) {
+		        e.printStackTrace();
+		    }
+		}
+	}
+
+	
 }

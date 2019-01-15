@@ -7,18 +7,21 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 
 import com.company.project.config.StartupRunner;
+import com.company.project.listener.StartListener;
 
 
 @SpringBootApplication
 public class Application  extends SpringBootServletInitializer{
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-        
+	
+    public static void main(String[] args) {   	
+        SpringApplication sa = new SpringApplication(Application.class);
+        sa.addListeners(new StartListener());//监听应用启动  其它监听事件在初始化完成之后自动监听
+        sa.run(args);          
     }
-    
+      
 	@Override
 	protected SpringApplicationBuilder configure(
-			SpringApplicationBuilder application) {
+			SpringApplicationBuilder application) {		
 		return application.sources(Application.class);
 	}
     

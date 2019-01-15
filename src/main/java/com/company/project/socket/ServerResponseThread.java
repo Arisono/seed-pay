@@ -102,7 +102,8 @@ public class ServerResponseThread implements Runnable {
               System.out.println("用户：" + userIP
                       + " 退出,当前在线人数:" + (ConcurrentCache.getCacheSize()-1));
           } catch (Exception e) {
-              e.printStackTrace();
+        	  System.out.println("关闭socket读写线程！");
+             // e.printStackTrace();
           }
     	
     }
@@ -167,7 +168,7 @@ public class ServerResponseThread implements Runnable {
                     try {
                     	  msg=SocketUtil.readFromByeStream(inputStream);
 					} catch (Exception e) {
-					   e.printStackTrace();
+					   //e.printStackTrace();
 					   //关闭Socket
 					   //关闭IO流
 					   //接口回调
@@ -205,7 +206,7 @@ public class ServerResponseThread implements Runnable {
                 SocketUtil.closeInputStream(inputStream);
                // System.out.println("ReceiveThread is finish");
             } catch (Exception e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
     }
@@ -251,7 +252,7 @@ public class ServerResponseThread implements Runnable {
                 SocketUtil.closeOutputStream(dataOutputStream);
                // System.out.println("SendThread is finish");
             } catch (Exception e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
     }
@@ -265,7 +266,7 @@ public class ServerResponseThread implements Runnable {
             try {
                 o.wait();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+               // e.printStackTrace();
             }
         }
     }
