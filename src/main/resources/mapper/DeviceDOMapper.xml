@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.project.dao.DeviceDOMapper">
+  <resultMap id="BaseResultMap" type="com.company.project.model.DeviceDO">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="deviceId" jdbcType="INTEGER" property="deviceid" />
+    <result column="deviceName" jdbcType="VARCHAR" property="devicename" />
+    <result column="deviceModel" jdbcType="VARCHAR" property="devicemodel" />
+    <result column="serialNumber" jdbcType="VARCHAR" property="serialnumber" />
+    <result column="deviceIp" jdbcType="VARCHAR" property="deviceip" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+    <result column="deviceMac" jdbcType="VARCHAR" property="devicemac" />
+    <result column="deviceMaker" jdbcType="VARCHAR" property="devicemaker" />
+    <result column="secretkey" jdbcType="VARCHAR" property="secretkey" />
+    <result column="isAuthorized" jdbcType="INTEGER" property="isauthorized" />
+    <result column="isOnline" jdbcType="INTEGER" property="isonline" />
+    <result column="isAutomatic" jdbcType="INTEGER" property="isautomatic" />
+    <result column="schoolId" jdbcType="INTEGER" property="schoolid" />
+  </resultMap>
+</mapper>

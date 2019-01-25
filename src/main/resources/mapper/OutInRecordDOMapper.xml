@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.project.dao.OutInRecordDOMapper">
+  <resultMap id="BaseResultMap" type="com.company.project.model.OutInRecordDO">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="record_id" jdbcType="BIGINT" property="recordId" />
+    <result column="record_name" jdbcType="VARCHAR" property="recordName" />
+    <result column="out_date" jdbcType="TIMESTAMP" property="outDate" />
+    <result column="in_date" jdbcType="TIMESTAMP" property="inDate" />
+    <result column="record_details" jdbcType="VARCHAR" property="recordDetails" />
+    <result column="record_remarks" jdbcType="VARCHAR" property="recordRemarks" />
+    <result column="stu_id" jdbcType="BIGINT" property="stuId" />
+    <result column="school_id" jdbcType="BIGINT" property="schoolId" />
+  </resultMap>
+</mapper>

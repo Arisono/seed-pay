@@ -32,8 +32,7 @@ public class StartupRunner implements CommandLineRunner {
 		 //SDKConfig.getConfig().loadPropertiesFromSrc();// 从classpath加载acp_sdk.properties文件		
 		 //开启socket服务
 		 startSocket();
-		 //发送udp消息
-		 sendUdpMeassage();		
+		 //发送udp消息		
 	}
 
 

@@ -23,7 +23,7 @@ public class ImgUtil {
         }
         try {
             // Base64解码
-            byte[] bytes = Base64.getDecoder().decode(baseStr);
+            byte[] bytes = Base64.getMimeDecoder().decode(baseStr);
             for (int i = 0; i < bytes.length; ++i) {
                 if (bytes[i] < 0) {// 调整异常数据
                     bytes[i] += 256;
@@ -62,7 +62,7 @@ public class ImgUtil {
             e.printStackTrace();
         }
         // 对字节数组Base64编码
-        return Base64.getEncoder().encodeToString(data); // 返回Base64编码过的字节数组字符串
+        return Base64.getMimeEncoder().encodeToString(data); // 返回Base64编码过的字节数组字符串
     }
 }
 

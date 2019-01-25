@@ -55,9 +55,9 @@ public class EmailController {
     	SimpleMailMessage message = new SimpleMailMessage();
     	message.setFrom("aliyun_services@sina.com");
     	message.setTo(users); // 群发
-    	message.setSubject("阿里云学生组团购买服务器送域名活动火热进行中");
-    	message.setText("欢迎访问：https://www.yundashi168.com/articles/2019/01/08/1546941171651.html"
-    			+ "  这里有最新，最全的技术资料分享。请记得收藏和关注我们哦！");
+    	message.setSubject("腾讯云服务器爆品抢购进行中1核1G1年仅168元");
+    	message.setText("http://cloud.yundashi168.com/archives/217"
+    			+ " 腾讯云服务器爆品抢购进行中1核1G1年仅168元！还有四天！");
     	mailSender.send(message);
     	return  ResultGenerator.genSuccessResult(message);
     }

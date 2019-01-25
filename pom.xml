@@ -62,25 +62,25 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- WebSocket-->
+		<!-- WebSocket -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-websocket</artifactId>
 		</dependency>
 		<!-- Netty -->
-		 <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-            <version>4.1.1.Final</version>
-        </dependency>
-        
-        <!--邮件服务 -->
-        <dependency>
-         <groupId>org.springframework.boot</groupId>
-         <artifactId>spring-boot-starter-mail</artifactId>
-         </dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>4.1.1.Final</version>
+		</dependency>
 
-        
+		<!--邮件服务 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+
+
 		<!--常用库依赖 -->
 		<dependency>
 			<groupId>commons-codec</groupId>

@@ -18,9 +18,9 @@ import static com.company.project.core.ProjectConstant.*;
  */
 public class CodeGenerator {
     //JDBC配置，请修改为你项目的实际配置
-    private static final String JDBC_URL = "jdbc:mysql://120.77.44.141:3306/aliyun-0516";
-    private static final String JDBC_USERNAME = "arison";
-    private static final String JDBC_PASSWORD = "13266699268";
+    private static final String JDBC_URL = "jdbc:mysql://10.10.100.166:3306/smart_campus";
+    private static final String JDBC_USERNAME = "root";
+    private static final String JDBC_PASSWORD = "select111***";
     private static final String JDBC_DIVER_CLASS_NAME = "com.mysql.jdbc.Driver";
 
     private static final String PROJECT_PATH = System.getProperty("user.dir");//项目在硬盘上的基础路径
@@ -37,14 +37,22 @@ public class CodeGenerator {
     private static final String DATE = new SimpleDateFormat("yyyy/MM/dd").format(new Date());//@date
 
     public static void main(String[] args) {
+    
+    	//表名和实体名不一样的情况
+    	//智慧校园-设备硬件对接模块
+//    	genCodeByCustomModelName("sys_student", "StudentDO");//学生表
+//    	genCodeByCustomModelName("out_in_record", "OutInRecordDO");//识别记录表
+    	genCodeByCustomModelName("device", "DeviceDO");//设备表
+		//genCodeByCustomModelName("tbl_user","User");
+		//genCodeByCustomModelName("tbl_bookmark_classify","BookmarkClassic");
+		//genCodeByCustomModelName("tbl_bookmark","Bookmark");
+        
+        //genCodeByCustomModelName("tbl_sockets","Sockets");
+        //genCodeByCustomModelName("tbl_sockets_messages","SocketsMessages");
+    	
+    	//表名和实体名一样的情况
         //genCode("user");
         //genCode("order");
-//        genCodeByCustomModelName("tbl_user","User");
-//        genCodeByCustomModelName("tbl_bookmark_classify","BookmarkClassic");
-//        genCodeByCustomModelName("tbl_bookmark","Bookmark");
-        
-        genCodeByCustomModelName("tbl_sockets","Sockets");
-        genCodeByCustomModelName("tbl_sockets_messages","SocketsMessages");
         
     }
 
