@@ -15,6 +15,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,6 +53,9 @@ public class WebSocketController {
 	public StudentDOMapper studentDOMapper;
 	@Resource
 	public OutInRecordDOMapper outInRecordDOMapper;
+	
+	@Value("${file.uploadFolder}")
+	private String uploadFolder;
 
 	@SuppressWarnings("static-access")
 	@ApiOperation(value = "向设备发送指令", notes = "")
@@ -151,9 +155,8 @@ public class WebSocketController {
 			@RequestParam String ip, @RequestParam MultipartFile file) {
 		FileOutputStream fos;
 		FileInputStream fs;
-		System.out.println("文件名：" + file.getOriginalFilename());
-		String filePath = "C://Users//Arison//Desktop//upload//"
-				+ file.getOriginalFilename();
+		String filePath =uploadFolder + file.getOriginalFilename();
+		System.out.println("文件路径：" + filePath);
 		try {
 			fos = new FileOutputStream(new File(filePath));
 			fs = (FileInputStream) file.getInputStream();

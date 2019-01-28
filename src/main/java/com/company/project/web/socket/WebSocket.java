@@ -41,7 +41,6 @@ import tk.mybatis.mapper.entity.Example.Criteria;
 
 @SuppressWarnings("unused")
 @ServerEndpoint(value = "/websocket" )
-//,configurator = SpringConfigurator.class
 @Component
 public class WebSocket {
      
