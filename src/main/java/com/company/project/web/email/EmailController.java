@@ -6,6 +6,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.project.core.Result;
@@ -16,6 +17,22 @@ import com.company.project.core.ResultGenerator;
 public class EmailController {
 	@Autowired  
     JavaMailSender jms;
+	
+	 @GetMapping("/errorInfo")
+	 public String getErrorInfo(@RequestParam( value="message") String msg){
+		    System.out.println("msg:"+msg);
+			SimpleMailMessage mainMessage = new SimpleMailMessage();
+			//发送者  
+			mainMessage.setFrom("aliyun_services@sina.com");
+			//接收者  
+			mainMessage.setTo("784602719@qq.com");
+			//发送的标题  
+			mainMessage.setSubject("APPBUG日志");
+			//发送的内容  
+			mainMessage.setText(msg);
+			jms.send(mainMessage);
+		 return msg;
+	 }
 	
     /**
      * 邮件单发
