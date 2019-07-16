@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.github.lihengming</groupId>
-	<artifactId>wxService</artifactId>
+	<artifactId>wxSocket</artifactId>
 	<version>1.0</version>
 	<packaging>war</packaging>
 
-	<name>wxService</name>
-	<description>wxService</description>
+	<name>wxSocket</name>
+	<description>wxSocket</description>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -239,7 +239,7 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
 					<encoding>UTF-8</encoding>
-					<warName>wxService</warName>
+					<warName>wxSocket</warName>
 				</configuration>
 			</plugin>
 			<!-- <plugin> <artifactId>maven-compiler-plugin</artifactId> <configuration> 
