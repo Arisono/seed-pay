@@ -19,8 +19,8 @@ public class Application  extends SpringBootServletInitializer{
         SpringApplication sa = new SpringApplication(Application.class);
         sa.addListeners(new StartListener());//监听应用启动  其它监听事件在初始化完成之后自动监听
         //解决webSocket注入问题
-        ConfigurableApplicationContext configurableApplicationContext =  sa.run(args);          
-        WebSocket.setApplicationContext(configurableApplicationContext);
+//        ConfigurableApplicationContext configurableApplicationContext =  sa.run(args);
+//        WebSocket.setApplicationContext(configurableApplicationContext);
     }
       
 	@Override

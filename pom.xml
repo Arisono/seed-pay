@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.github.lihengming</groupId>
-	<artifactId>wxSocket</artifactId>
+	<artifactId>seed-pay</artifactId>
 	<version>1.0</version>
 	<packaging>war</packaging>
 
-	<name>wxSocket</name>
-	<description>wxSocket</description>
+	<name>seed-pay</name>
+	<description>seed-pay</description>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -238,8 +238,8 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
-					<encoding>UTF-8</encoding>
-					<warName>wxSocket</warName>
+				<!--	<encoding>UTF-8</encoding>-->
+					<warName>seed-pay</warName>
 				</configuration>
 			</plugin>
 			<!-- <plugin> <artifactId>maven-compiler-plugin</artifactId> <configuration> 
